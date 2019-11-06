@@ -1,5 +1,51 @@
-extends layout
+head
+  meta(charset='UTF-8')
+  link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T', crossorigin='anonymous')
+  title my money
 
-block content
-  h1= title
-  p Welcome to #{title}
+body
+
+  br
+  // Основное поле
+  .container
+    // Поиск
+    .row
+      form.form-inline.col-sm-12.col-md-12(action="/search")
+        .col-sm-12.col-md-3
+          .input-group
+            if (mFrom === undefined)
+              input#moneyFrom.form-control(type='text' placeholder='из' required=true name="moneyFrom")
+            else
+              input#moneyFrom.form-control(type='text' placeholder='из' required=true name="moneyFrom" value = cFrom)
+        .col-sm-12.col-md-2
+          .input-group
+            select(name='currencyTo' class="form-control")
+              -for(let i = 0; i < currency.length; i++)
+                option(value=currency[i]) #{currency[i]}
+        .col-sm-12.col-md-3
+          .input-group
+            if (mTo === undefined)
+              input#moneyTo.form-control(type='text' placeholder='в' required=true name="moneyTo")
+            else
+              input#moneyTo.form-control(type='text' placeholder='в' required=true name="moneyTo" value = cTo)
+        .col-sm-12.col-md-2
+          .input-group
+            select(name='currencyTo' class="form-control")
+              -for(let i = 0; i < currency.length; i++)
+                  option(value=currency[i]) #{currency[i]}
+
+        .col-sm-12.col-md-2
+          button.btn.btn-dark.btn-block(type='submit' style='background-color: #3f294f;') Перевести
+
+
+  nav.navbar.fixed-bottom.navbar-expand-sm.navbar-light.bg-light
+    footer.main-footer.d-flex.p-2.px-3(style='margin: 0 0 0 auto;')
+      span.text-muted.ml-auto.my-auto.mr-2 no aviasales &copy; 2019 ma_daria
+
+
+
+
+  script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js', integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo', crossorigin='anonymous')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1', crossorigin='anonymous')
+  script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM', crossorigin='anonymous')
+  script(src='javascripts/chek_city.js')
