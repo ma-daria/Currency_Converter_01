@@ -3,20 +3,37 @@ let router = express.Router();
 const axios = require('axios');
 
 router.get('/', async function(req, res, next) {
+  let flag;
+  let currencyList = [];
   console.log(process.env.TEST);
-  let  currency = await axios.get('https://www.cbr-xml-daily.ru/daily_json.js');
+  let f = true;
+  let  currency;
+  try {
+    currency = await axios.get('https://www.cbr-xml-daily.ru/daily_json.js');
+  } catch (e) {
+    f = false;
+    flag = "В данный момент сервис не доступен. Попробуйте позднее.";
+    currencyList = [];
+  }
 
-
-
-  let currencyList = Object.keys(currency.data.Valute);
-  currencyList.push('RUS');
+  if (f) {
+    if (currency.status >= 300) {
+      flag = "В данный момент сервис не доступен. Попробуйте позднее.";
+      currencyList = [];
+    } else {
+      flag = currency.data.Date;
+      currencyList = Object.keys(currency.data.Valute);
+      currencyList.push('RUS');
+    }
+  }
 
 
   res.render('index', {
     mFrom: null,
     mTo: null,
     currencyFrom: currencyList,
-    currencyTo: currencyList
+    currencyTo: currencyList,
+    flag: flag
   });
 });
 
