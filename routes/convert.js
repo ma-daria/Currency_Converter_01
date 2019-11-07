@@ -15,7 +15,7 @@ router.get('/', async function(req, res, next) {
 
     let  currency;
     try {
-        currency = await axios.get('https://www.cbr-xml-daily.ru/daily_json.js');
+        currency = await axios.get(process.env.URL_VALUTE);
     } catch (e) {
         flag = "В данный момент сервис не доступен. Попробуйте позднее.";
         currencyList = [];
