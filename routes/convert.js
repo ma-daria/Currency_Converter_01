@@ -6,7 +6,7 @@ router.get('/', async function(req, res, next) {
     let moneyFrom = req.query.moneyFrom;
     let currencyFrom = req.query.currencyFrom;
     let currencyTo = req.query.currencyTo;
-    let currency = await axios.get('https://www.cbr-xml-daily.ru/daily_json.js');
+    let currency = await axios.get(process.env.URL_VALUTE);
     let mFrom;
     let mTo;
 

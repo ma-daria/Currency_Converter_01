@@ -3,6 +3,7 @@ let router = express.Router();
 const axios = require('axios');
 
 router.get('/', async function(req, res, next) {
+  console.log(process.env.TEST);
   let  currency = await axios.get('https://www.cbr-xml-daily.ru/daily_json.js');
 
 
