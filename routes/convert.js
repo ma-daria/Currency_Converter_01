@@ -2,7 +2,10 @@ let express = require('express');
 let router = express.Router();
 const axios = require('axios');
 
-router.get('/', async function(req, res, next) {
+/**
+ * конверктация
+ */
+router.get('/', async function(req, res) {
     let moneyFrom = req.query.moneyFrom;
     let currencyFrom = req.query.currencyFrom;
     let currencyTo = req.query.currencyTo;
@@ -64,16 +67,15 @@ router.get('/', async function(req, res, next) {
     });
 });
 
-
-
-
+/**
+ * перенос выбранной валюты в начало списка
+ * @param list - список валют
+ * @param currency - выбранная валюта
+ */
 function  ToUnshift(list, currency){
     let i = list.indexOf(currency);
     list.splice(i, 1);
     list.unshift(currency);
 }
-
-
-
 
 module.exports = router;
