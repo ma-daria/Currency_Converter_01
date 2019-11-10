@@ -3,25 +3,59 @@ let router = express.Router();
 const axios = require('axios');
 
 /**
- * конверктация
+ * роут для страницы index с данными.
  */
 router.get('/', async function(req, res) {
     let moneyFrom = req.query.moneyFrom;
     let currencyFrom = req.query.currencyFrom;
     let currencyTo = req.query.currencyTo;
+
+    let mas = await getValute(moneyFrom, currencyFrom, currencyTo);
+
+    res.render('index', {
+        mFrom: moneyFrom,
+        mTo: mas.moneyTo.toFixed(2),
+        currencyFrom: mas.currencyListFrom,
+        currencyTo: mas.currencyListTo,
+        flag: mas.flag
+    });
+});
+
+/**
+ * Перевод в другую валюту
+ * @param moneyFrom - сумма денег
+ * @param mFrom - курс исходной валюты
+ * @param mTo - курс запрашиваемой валюты
+ * @returns {number} - полученная сумма денег
+ */
+function convert(moneyFrom, mFrom, mTo) {
+    return (moneyFrom * mFrom) / mTo;
+}
+
+/**
+ * Получение данных для конферктации
+ * @param moneyFrom  - сумма денег
+ * @param currencyFrom - куурс исходной валюты
+ * @param currencyTo - курс запрашиваемой валюты
+ * @returns {Promise<{flag: *, moneyTo: *, currencyListTo: *, currencyListFrom: *}>} - {флаг состояния, сумма после конвертирования, курс новой волюты, курс исходной}
+ */
+async function getValute(moneyFrom, currencyFrom, currencyTo){
+
     let mFrom;
     let mTo;
     let moneyTo = 0;
     let currencyListFrom = [];
     let currencyListTo = [];
     let f = true;
+    let flag;
 
     let  currency;
     try {
         currency = await axios.get(process.env.URL_VALUTE);
     } catch (e) {
         flag = "В данный момент сервис не доступен. Попробуйте позднее.";
-        currencyList = [];
+        currencyListTo = [];
+        currencyListFrom = [];
         f= false;
     }
 
@@ -43,7 +77,7 @@ router.get('/', async function(req, res) {
                 mTo = currency.data.Valute[currencyTo].Value;
             }
 
-            moneyTo = (moneyFrom * mFrom) / mTo;
+            moneyTo = convert(moneyFrom, mFrom, mTo);
 
 
             let currencyList = Object.keys(currency.data.Valute);
@@ -55,17 +89,10 @@ router.get('/', async function(req, res) {
             ToUnshift(currencyListFrom, currencyFrom);
             ToUnshift(currencyListTo, currencyTo);
         }
+
+        return {flag, moneyTo, currencyListFrom, currencyListTo}
     }
-
-
-    res.render('index', {
-        mFrom: moneyFrom,
-        mTo: moneyTo.toFixed(2),
-        currencyFrom: currencyListFrom,
-        currencyTo: currencyListTo,
-        flag: flag
-    });
-});
+}
 
 /**
  * перенос выбранной валюты в начало списка

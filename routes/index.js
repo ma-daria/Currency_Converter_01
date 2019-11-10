@@ -3,12 +3,30 @@ let router = express.Router();
 const axios = require('axios');
 
 /**
- * роут для страницы index. Обращение к данным курса валют. Получаени списка доступных валют.
+ * роут для страницы index пустая.
  */
 router.get('/', async function(req, res) {
+
+  let mas = await getValute();
+  let flag = mas.flag;
+  let currencyList = mas.currencyList;
+
+  res.render('index', {
+    mFrom: null,
+    mTo: null,
+    currencyFrom: currencyList,
+    currencyTo: currencyList,
+    flag: flag
+  });
+});
+
+/**
+ * Получение доступных валют
+ * @returns {Promise<{flag: *, currencyList: *}>}
+ */
+async function getValute(){
   let flag;
   let currencyList = [];
-  console.log(process.env.TEST);
   let f = true;
   let  currency;
   try {
@@ -29,14 +47,7 @@ router.get('/', async function(req, res) {
       currencyList.push('RUS');
     }
   }
-
-  res.render('index', {
-    mFrom: null,
-    mTo: null,
-    currencyFrom: currencyList,
-    currencyTo: currencyList,
-    flag: flag
-  });
-});
+  return {flag, currencyList}
+}
 
 module.exports = router;
